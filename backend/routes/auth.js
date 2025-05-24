@@ -98,9 +98,9 @@ router.post('/login', async (req, res) => {
 // Create initial admin user
 router.post('/setup', async (req, res) => {
     try {
-        const { username, password, name, email } = req.body;
+        const { username, password, firstName, lastName, email } = req.body;
 
-        if (!username || !password || !name || !email) {
+        if (!username || !password || !firstName || !lastName || !email) {
             return res.status(400).json({
                 message: 'All fields are required'
             });
@@ -117,7 +117,8 @@ router.post('/setup', async (req, res) => {
         const admin = new User({
             username,
             password,
-            name,
+            firstName,
+            lastName,
             email,
             role: 'admin'
         });
@@ -125,8 +126,12 @@ router.post('/setup', async (req, res) => {
         await admin.save();
         res.status(201).json({ message: 'Admin user created successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
-        console.error(error);
+        console.error('Admin setup error:', error);
+        res.status(500).json({ 
+            message: 'Server error',
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 });
 
