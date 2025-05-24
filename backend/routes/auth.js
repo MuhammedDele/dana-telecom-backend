@@ -126,6 +126,7 @@ router.post('/setup', async (req, res) => {
         res.status(201).json({ message: 'Admin user created successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
+        console.error(error);
     }
 });
 
